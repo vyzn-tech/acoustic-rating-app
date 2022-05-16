@@ -1,0 +1,73 @@
+version: '3.3'
+volumes:
+  database_volume: {}
+
+networks:
+  default: {}
+  public:
+    external: true
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: .devops/docker/api/Dockerfile
+    depends_on:
+      - database
+    env_file: .env
+    networks:
+      - default
+    volumes:
+      - ./api:/app
+    working_dir: /app
+
+  database:
+    build:
+      context: .
+      dockerfile: .devops/docker/database/Dockerfile
+    env_file: .env
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=public
+      - traefik.tcp.routers.db-tcp.rule=HostSNI(`database.dbs-acoustic-rating.docker`)
+      - traefik.tcp.routers.db-tcp.entrypoints=database
+      - traefik.tcp.routers.db-tcp.service=db-proxy
+      - traefik.tcp.services.db-proxy.loadbalancer.server.port=3306
+    networks:
+      default:
+        aliases:
+          - database.dbs-acoustic-rating.docker
+    volumes:
+      - database_volume:/var/lib/mysql
+
+  frontend:
+    build:
+      context: .
+      dockerfile: .devops/docker/frontend/Dockerfile
+    env_file: .env
+    networks:
+      - default
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+
+  proxy:
+    build:
+      context: .
+      dockerfile: .devops/docker/proxy/Dockerfile
+    depends_on:
+      - api
+      - frontend
+    env_file: .env
+    labels:
+      - traefik.backend=dbs-acoustic-rating
+      - traefik.frontend.rule=Host:dev.dbs-acoustic-rating.docker
+      - traefik.docker.network=public
+      - traefik.port=80
+    networks:
+      default:
+        aliases:
+          - dev.dbs-acoustic-rating.docker
+      public: {}
+    volumes:
+      - ./api/static:/app/api/v1/static

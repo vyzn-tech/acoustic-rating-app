@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Checking Code Style"
+
+sleep 2
+
+echo "frontend"
+(cd api || exit; echo "check frontend code here")
+
+sleep 1
+
+echo "api"
+(cd api || exit; echo "check api code here")
+
+echo "no errors found."

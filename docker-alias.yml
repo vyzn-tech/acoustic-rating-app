@@ -1,0 +1,14 @@
+containers:
+  node:
+    build:
+      context: .
+      dockerfile: .devops/docker/alias/node/Dockerfile
+    volumes:
+      - $YAML_LOCATION_DIR:$DEFAULT_WORKING_DIR
+    commands:
+      - node
+      - npm
+      - npx
+      - nest
+    env_file: .env
+    user: "$UID"

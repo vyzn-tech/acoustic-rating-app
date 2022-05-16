@@ -1,0 +1,17 @@
+function plugin_name() {
+  echo "frontend"
+}
+
+function cleanup() {
+  [ -d node_modules ] || mkdir node_modules
+  rm -Rf node_modules/*
+}
+
+function init() {
+    update
+}
+
+function update() {
+  cleanup
+  npm install
+}

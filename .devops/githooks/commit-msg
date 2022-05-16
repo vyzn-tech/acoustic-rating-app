@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+COMMIT_REGEX='^(\[[a-zA-Z0-9]+-[0-9]+\] .+)$'
+MESSAGE_EXAMPLE="Aborting commit. Please check your commit-message format. Example: [PROJ-123] message'"
+
+if ! grep -iqE "$COMMIT_REGEX" "$1"; then
+    echo "$MESSAGE_EXAMPLE" >&2
+    exit 1
+fi

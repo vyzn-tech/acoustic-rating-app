@@ -1,0 +1,3 @@
+[submodule ".devops/devsh"]
+	path = .devops/devsh
+	url = git@gitlab.com:clecherbauer/tools/devsh.git
