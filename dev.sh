@@ -6,20 +6,20 @@ if [ ! -f ".devops/devsh/dev.main.sh" ]; then
 fi
 source .devops/devsh/dev.main.sh
 
-function configureGit() {
+function configure_git() {
   git config core.hooksPath .devops/githooks
 }
 
 function update_pre_hook() {
-  direnv allow . && eval "$(direnv hook bash)"
-  configureGit
+  direnv allow . && eval "$(direnv hook bash)" && direnv reload
+  configure_git
 }
 
 function init_pre_hook() {
-  # git submodule update --init
-  direnv allow . && eval "$(direnv hook bash)"
+  git submodule update --init
+  direnv allow . && eval "$(direnv hook bash)" && direnv reload
   docker-alias add
-  configureGit
+  configure_git
 }
 
 run "$@"
