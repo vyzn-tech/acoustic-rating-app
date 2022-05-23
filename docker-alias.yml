@@ -10,5 +10,6 @@ containers:
       - npm
       - npx
       - nest
+      - eslint
     env_file: .env
     user: "$UID"
