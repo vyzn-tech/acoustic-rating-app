@@ -19,6 +19,7 @@ services:
       - default
     volumes:
       - ./api:/app
+      - ./.devops/docker/api/config/entrypoint.sh:/usr/local/bin/entrypoint.sh
     working_dir: /app
 
   database:

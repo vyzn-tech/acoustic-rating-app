@@ -2,10 +2,10 @@
 set -e
 
 SOURCE_ROOT="/var/source"
-$SOURCE_ROOT/.devops/devsh/switch_user.sh "www-data"
+$SOURCE_ROOT/.devops/devsh/switch_user.sh "node"
 
 apt-get -qq update
-apt-get -qq install default-mysql-client -y
+apt-get -qq install default-mysql-client procps -y
 
 cp "$SOURCE_ROOT/.devops/docker/api/config/entrypoint.sh" /usr/local/bin
 

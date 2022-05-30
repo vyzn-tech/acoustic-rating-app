@@ -4,4 +4,4 @@ WORKDIR /var/source
 COPY . /var/source
 RUN /var/source/.devops/docker/frontend/build.sh
 
-CMD runuser -u www-data -- npm run start
+CMD runuser -u node -- npm run start

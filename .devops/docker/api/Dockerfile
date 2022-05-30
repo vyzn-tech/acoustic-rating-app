@@ -7,4 +7,4 @@ RUN /var/source/.devops/docker/api/build.sh
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD runuser -u www-data -- npm run start:dev
+CMD npm run start:dev
