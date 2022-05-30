@@ -8,7 +8,7 @@ source .devops/devsh/dev.main.sh
 
 function configure_git() {
   git config core.hooksPath .devops/githooks
-  git submodule foreach ''
+  git submodule foreach 'if [ -f dev.sh ]; then ./dev.sh init; fi'
 }
 
 function update_pre_hook() {
