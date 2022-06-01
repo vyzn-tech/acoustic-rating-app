@@ -3,6 +3,8 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Response,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -10,7 +12,9 @@ import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiFile } from './api-file.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { parse } from 'csv-parse';
+import { stringify } from 'csv-stringify/sync';
+import { parseCSV } from 'csv-load-sync';
+
 import {
   ALL_PREDEFINED_TYPES,
   IFCBuilding,
@@ -22,7 +26,10 @@ import {
   IFCWall,
   IFCZone,
   PREDEFINED_TYPE_FLOOR,
-} from '../libs/acoustic-rating-calculator/src';
+} from '../libs/acoustic-rating-calculator/src/calculator';
+import { isString } from 'lodash';
+import { createReadStream } from 'fs';
+import * as fs from 'fs';
 
 const csvMimeTypes = [
   'application/csv',
@@ -32,19 +39,19 @@ const csvMimeTypes = [
   'text/x-comma-separated-values',
 ];
 
-const csvHeaders = [
-  'GUID',
-  'Entity',
-  'PredefinedType',
-  'ParentIds',
-  'Name',
-  'AcousticRatingLevelReq',
-  'Status',
-  'IsExternal',
-  'OccupancyType',
-  'CelestialDirection',
-  'CenterOfGravityZ',
-];
+// const csvHeaders = [
+//   'GUID',
+//   'Entity',
+//   'PredefinedType',
+//   'ParentIds',
+//   'Name',
+//   'AcousticRatingLevelReq',
+//   'Status',
+//   'IsExternal',
+//   'OccupancyType',
+//   'CelestialDirection',
+//   'CenterOfGravityZ',
+// ];
 
 const multerOptions = {
   limits: {
@@ -73,19 +80,24 @@ export class AppController {
   @ApiFile()
   @Post('calculate')
   @UseInterceptors(FileInterceptor('file', multerOptions))
-  calculate(@UploadedFile() file: Express.Multer.File) {
-    parse(
-      file.buffer.toString(),
-      {
-        delimiter: ',',
-        columns: csvHeaders,
-        fromLine: 2,
-      },
-      (error, rows) => {
-        const ifcItems = this.buildIFCItems(rows);
-        console.log(ifcItems);
-      },
-    );
+  calculate(
+    @UploadedFile() file: Express.Multer.File,
+    @Response({ passthrough: true }) res,
+  ): StreamableFile {
+    const records = parseCSV(file.buffer.toString());
+
+    const ifcItems = this.buildIFCItems(records);
+    const outputCsvAsString = stringify(ifcItems);
+    const tmpFileName = Date.now() + '.csv';
+    const tmpFilePath = 'tmp/' + tmpFileName;
+    fs.writeFileSync(tmpFilePath, outputCsvAsString);
+    const response_file = createReadStream(tmpFilePath);
+
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': 'attachment; filename=output.csv',
+    });
+    return new StreamableFile(response_file);
   }
 
   buildIFCItems(rows): IFCItem[] {
@@ -119,7 +131,7 @@ export class AppController {
     return ifcItems;
   }
 
-  buildCommonIFCItemAttributes<T extends IFCItem>(row, iFCItem): T {
+  setCommonIFCItemAttributes<T extends IFCItem>(row, iFCItem): T {
     let parentIds = [];
     parentIds = row.ParentIds.replace(/ /g, '').split(',');
     iFCItem.id = row.GUID;
@@ -128,7 +140,7 @@ export class AppController {
     return iFCItem;
   }
 
-  buildIFCComponentAttributes<T extends IFCItem>(row, iFCItem): T {
+  setIFCComponentAttributes<T extends IFCItem>(row, iFCItem): T {
     iFCItem.isExternal = row.IsExternal.toLowerCase() === 'true';
     iFCItem.celestialDirection = row.CelestialDirection;
 
@@ -137,31 +149,31 @@ export class AppController {
 
   buildIFCWall(row): IFCWall {
     let iFCItem: IFCWall = new IFCWall();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
-    iFCItem = this.buildIFCComponentAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setIFCComponentAttributes(row, iFCItem);
 
     return iFCItem;
   }
 
   buildIFCDoor(row): IFCDoor {
     let iFCItem: IFCDoor = new IFCDoor();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
-    iFCItem = this.buildIFCComponentAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setIFCComponentAttributes(row, iFCItem);
 
     return iFCItem;
   }
 
   buildIFCRoof(row): IFCRoof {
     let iFCItem: IFCRoof = new IFCRoof();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
-    iFCItem = this.buildIFCComponentAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setIFCComponentAttributes(row, iFCItem);
 
     return iFCItem;
   }
 
   buildIFCSpace(row): IFCSpace {
     let iFCItem: IFCSpace = new IFCSpace();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
     iFCItem.occupancyType = row.OccupancyType;
     iFCItem.centerOfGravityZ = parseInt(row.CenterOfGravityZ);
 
@@ -170,10 +182,10 @@ export class AppController {
 
   buildIFCSlab(row): IFCSlab {
     let iFCItem: IFCSlab = new IFCSlab();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
-    iFCItem = this.buildIFCComponentAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setIFCComponentAttributes(row, iFCItem);
     if (
-      !row.PredefinedType instanceof String ||
+      !isString(row.PredefinedType) ||
       !ALL_PREDEFINED_TYPES.includes(row.PredefinedType.toUpperCase())
     ) {
       iFCItem.predefinedType = PREDEFINED_TYPE_FLOOR;
@@ -186,7 +198,7 @@ export class AppController {
 
   buildIFCBuilding(row): IFCBuilding {
     let iFCItem: IFCBuilding = new IFCBuilding();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
     iFCItem.name = row.Name;
     iFCItem.status = row.Status;
 
@@ -195,7 +207,7 @@ export class AppController {
 
   buildIFCZone(row): IFCZone {
     let iFCItem: IFCZone = new IFCZone();
-    iFCItem = this.buildCommonIFCItemAttributes(row, iFCItem);
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem);
     iFCItem.name = row.Name;
     iFCItem.status = row.Status;
     iFCItem.acousticRatingLevelReq = row.AcousticRatingLevelReq;
