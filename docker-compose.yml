@@ -6,6 +6,8 @@ networks:
   default: {}
   public:
     external: true
+  dbs_network:
+    external: true
 
 services:
   api:
@@ -70,5 +72,8 @@ services:
         aliases:
           - dev.dbs-acoustic-rating.docker
       public: {}
+      dbs_network:
+        aliases:
+          - dbs-acoustic-rating
     volumes:
       - ./api/static:/app/api/v1/static
