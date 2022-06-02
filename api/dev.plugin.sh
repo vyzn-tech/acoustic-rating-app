@@ -14,4 +14,5 @@ function init() {
 function update() {
   cleanup
   npm install
+  chmod +x node_modules/.bin/*
 }
