@@ -1,5 +1,5 @@
-import { Command } from 'nestjs-command';
-import { Injectable } from '@nestjs/common';
+import { Command } from 'nestjs-command'
+import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AppCommand {
@@ -8,6 +8,6 @@ export class AppCommand {
     describe: 'test',
   })
   async test() {
-    console.log('test');
+    console.log('test')
   }
 }

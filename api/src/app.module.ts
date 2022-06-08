@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { CommandModule } from 'nestjs-command';
-import { AppCommand } from './app.command';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { CommandModule } from 'nestjs-command'
+import { AppCommand } from './app.command'
 
 @Module({
   imports: [CommandModule],
