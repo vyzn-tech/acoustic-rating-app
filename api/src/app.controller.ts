@@ -17,20 +17,20 @@ import { parseCSV } from 'csv-load-sync'
 
 import {
   ALL_PREDEFINED_TYPES,
-  IFCBuilding,
-  IFCDoor,
-  IFCItem,
-  IFCRoof,
-  IFCSlab,
-  IFCSpace,
-  IFCWall,
-  IFCZone,
+  Building,
+  Door,
+  Item,
+  Roof,
+  Slab,
+  Space,
+  Wall,
+  Zone,
   PREDEFINED_TYPE_FLOOR,
   AcousticRatingCalculator,
   ExternalAcousticRatingCollection,
   ExternalAcousticRating,
   PREDEFINED_TYPE_ROOF,
-  IFCFlatRoof,
+  FlatRoof,
 } from '../libs/acoustic-rating-calculator/src/calculator'
 import { isString } from 'lodash'
 import { createReadStream } from 'fs'
@@ -86,14 +86,14 @@ export class AppController {
       new ExternalAcousticRating(0, 0),
       new ExternalAcousticRating(0, 0),
     )
-    const ifcItems = this.buildIFCItems(records)
+    const items = this.buildItems(records)
     const calculator = new AcousticRatingCalculator(
-      ifcItems,
+      items,
       externalAcousticRatings,
     )
     calculator.calculate()
 
-    const outputCsvAsString = stringify(ifcItems)
+    const outputCsvAsString = stringify(items)
     const tmpFileName = Date.now() + '.csv'
     const tmpFilePath = 'tmp/' + tmpFileName
     fs.writeFileSync(tmpFilePath, outputCsvAsString)
@@ -106,130 +106,130 @@ export class AppController {
     return new StreamableFile(response_file)
   }
 
-  buildIFCItems(rows): IFCItem[] {
-    const ifcItems: IFCItem[] = []
+  buildItems(rows): Item[] {
+    const items: Item[] = []
     for (const row of rows) {
       switch (row.Entity.toLowerCase()) {
         case 'ifcbuilding':
-          ifcItems.push(this.buildIFCBuilding(row))
+          items.push(this.buildBuilding(row))
           continue
         case 'ifcdoor':
-          ifcItems.push(this.buildIFCDoor(row))
+          items.push(this.buildDoor(row))
           continue
         case 'ifcroof':
-          ifcItems.push(this.buildIFCRoof(row))
+          items.push(this.buildRoof(row))
           continue
         case 'ifcspace':
-          ifcItems.push(this.buildIFCSpace(row))
+          items.push(this.buildSpace(row))
           continue
         case 'ifcwall':
-          ifcItems.push(this.buildIFCWall(row))
+          items.push(this.buildWall(row))
           continue
         case 'ifczone':
-          ifcItems.push(this.buildIFCZone(row))
+          items.push(this.buildZone(row))
           continue
       }
 
       if (row.Entity.toLowerCase() === 'ifcslab') {
         if (row.PredefindedType === PREDEFINED_TYPE_ROOF) {
-          ifcItems.push(this.buildIFCFlatRoof(row))
+          items.push(this.buildFlatRoof(row))
           continue
         }
-        ifcItems.push(this.buildIFCSlab(row))
+        items.push(this.buildSlab(row))
       }
     }
-    return ifcItems
+    return items
   }
 
-  setCommonIFCItemAttributes<T extends IFCItem>(row, iFCItem): T {
+  setCommonItemAttributes<T extends Item>(row, item): T {
     let parentIds = []
     parentIds = row.ParentIds.replace(/ /g, '').split(',')
-    iFCItem.id = row.GUID
-    iFCItem.parentIds = parentIds
+    item.id = row.GUID
+    item.parentIds = parentIds
 
-    return iFCItem
+    return item
   }
 
-  setIFCComponentAttributes<T extends IFCItem>(row, iFCItem): T {
-    iFCItem.isExternal = row.IsExternal.toLowerCase() === 'true'
-    iFCItem.celestialDirection = row.CelestialDirection
+  setComponentAttributes<T extends Item>(row, item): T {
+    item.isExternal = row.IsExternal.toLowerCase() === 'true'
+    item.celestialDirection = row.CelestialDirection
 
-    return iFCItem
+    return item
   }
 
-  buildIFCWall(row): IFCWall {
-    let iFCItem: IFCWall = new IFCWall()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+  buildWall(row): Wall {
+    let item: Wall = new Wall()
+    item = this.setCommonItemAttributes(row, item)
+    item = this.setComponentAttributes(row, item)
 
-    return iFCItem
+    return item
   }
 
-  buildIFCDoor(row): IFCDoor {
-    let iFCItem: IFCDoor = new IFCDoor()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+  buildDoor(row): Door {
+    let item: Door = new Door()
+    item = this.setCommonItemAttributes(row, item)
+    item = this.setComponentAttributes(row, item)
 
-    return iFCItem
+    return item
   }
 
-  buildIFCRoof(row): IFCRoof {
-    let iFCItem: IFCRoof = new IFCRoof()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+  buildRoof(row): Roof {
+    let item: Roof = new Roof()
+    item = this.setCommonItemAttributes(row, item)
+    item = this.setComponentAttributes(row, item)
 
-    return iFCItem
+    return item
   }
 
-  buildIFCFlatRoof(row): IFCFlatRoof {
-    let iFCItem: IFCFlatRoof = new IFCFlatRoof()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+  buildFlatRoof(row): FlatRoof {
+    let item: FlatRoof = new FlatRoof()
+    item = this.setCommonItemAttributes(row, item)
+    item = this.setComponentAttributes(row, item)
 
-    return iFCItem
+    return item
   }
 
-  buildIFCSpace(row): IFCSpace {
-    let iFCItem: IFCSpace = new IFCSpace()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem.occupancyType = row.OccupancyType
-    iFCItem.centerOfGravityZ = parseInt(row.CenterOfGravityZ)
+  buildSpace(row): Space {
+    let item: Space = new Space()
+    item = this.setCommonItemAttributes(row, item)
+    item.occupancyType = row.OccupancyType
+    item.centerOfGravityZ = parseInt(row.CenterOfGravityZ)
 
-    return iFCItem
+    return item
   }
 
-  buildIFCSlab(row): IFCSlab {
-    let iFCItem: IFCSlab = new IFCSlab()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+  buildSlab(row): Slab {
+    let item: Slab = new Slab()
+    item = this.setCommonItemAttributes(row, item)
+    item = this.setComponentAttributes(row, item)
     if (
       !isString(row.PredefinedType) ||
       !ALL_PREDEFINED_TYPES.includes(row.PredefinedType.toUpperCase())
     ) {
-      iFCItem.predefinedType = PREDEFINED_TYPE_FLOOR
+      item.predefinedType = PREDEFINED_TYPE_FLOOR
     } else {
-      iFCItem.predefinedType = row.PredefinedType
+      item.predefinedType = row.PredefinedType
     }
 
-    return iFCItem
+    return item
   }
 
-  buildIFCBuilding(row): IFCBuilding {
-    let iFCItem: IFCBuilding = new IFCBuilding()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem.status = row.Status
-    iFCItem.name = row.Name
+  buildBuilding(row): Building {
+    let item: Building = new Building()
+    item = this.setCommonItemAttributes(row, item)
+    item.status = row.Status
+    item.name = row.Name
 
-    return iFCItem
+    return item
   }
 
-  buildIFCZone(row): IFCZone {
-    let iFCItem: IFCZone = new IFCZone()
-    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem.name = row.Name
-    iFCItem.status = row.Status
-    iFCItem.acousticRatingLevelReq = row.AcousticRatingLevelReq
+  buildZone(row): Zone {
+    let item: Zone = new Zone()
+    item = this.setCommonItemAttributes(row, item)
+    item.name = row.Name
+    item.status = row.Status
+    item.acousticRatingLevelReq = row.AcousticRatingLevelReq
 
-    return iFCItem
+    return item
   }
 }
