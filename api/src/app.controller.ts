@@ -26,6 +26,11 @@ import {
   IFCWall,
   IFCZone,
   PREDEFINED_TYPE_FLOOR,
+  AcousticRatingCalculator,
+  ExternalAcousticRatingCollection,
+  ExternalAcousticRating,
+  PREDEFINED_TYPE_ROOF,
+  IFCFlatRoof,
 } from '../libs/acoustic-rating-calculator/src/calculator'
 import { isString } from 'lodash'
 import { createReadStream } from 'fs'
@@ -38,20 +43,6 @@ const csvMimeTypes = [
   'text/comma-separated-values',
   'text/x-comma-separated-values',
 ]
-
-// const csvHeaders = [
-//   'GUID',
-//   'Entity',
-//   'PredefinedType',
-//   'ParentIds',
-//   'Name',
-//   'AcousticRatingLevelReq',
-//   'Status',
-//   'IsExternal',
-//   'OccupancyType',
-//   'CelestialDirection',
-//   'CenterOfGravityZ',
-// ]
 
 const multerOptions = {
   limits: {
@@ -85,8 +76,23 @@ export class AppController {
     @Response({ passthrough: true }) res,
   ): StreamableFile {
     const records = parseCSV(file.buffer.toString())
-
+    const externalAcousticRatings = new ExternalAcousticRatingCollection(
+      new ExternalAcousticRating(62, 55),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+      new ExternalAcousticRating(0, 0),
+    )
     const ifcItems = this.buildIFCItems(records)
+    const calculator = new AcousticRatingCalculator(
+      ifcItems,
+      externalAcousticRatings,
+    )
+    calculator.calculate()
+
     const outputCsvAsString = stringify(ifcItems)
     const tmpFileName = Date.now() + '.csv'
     const tmpFilePath = 'tmp/' + tmpFileName
@@ -106,28 +112,32 @@ export class AppController {
       switch (row.Entity.toLowerCase()) {
         case 'ifcbuilding':
           ifcItems.push(this.buildIFCBuilding(row))
-          break
+          continue
         case 'ifcdoor':
           ifcItems.push(this.buildIFCDoor(row))
-          break
+          continue
         case 'ifcroof':
           ifcItems.push(this.buildIFCRoof(row))
-          break
+          continue
         case 'ifcspace':
           ifcItems.push(this.buildIFCSpace(row))
-          break
-        case 'ifcslab':
-          ifcItems.push(this.buildIFCSlab(row))
-          break
+          continue
         case 'ifcwall':
           ifcItems.push(this.buildIFCWall(row))
-          break
+          continue
         case 'ifczone':
           ifcItems.push(this.buildIFCZone(row))
-          break
+          continue
+      }
+
+      if (row.Entity.toLowerCase() === 'ifcslab') {
+        if (row.PredefindedType === PREDEFINED_TYPE_ROOF) {
+          ifcItems.push(this.buildIFCFlatRoof(row))
+          continue
+        }
+        ifcItems.push(this.buildIFCSlab(row))
       }
     }
-
     return ifcItems
   }
 
@@ -171,6 +181,14 @@ export class AppController {
     return iFCItem
   }
 
+  buildIFCFlatRoof(row): IFCFlatRoof {
+    let iFCItem: IFCFlatRoof = new IFCFlatRoof()
+    iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
+    iFCItem = this.setIFCComponentAttributes(row, iFCItem)
+
+    return iFCItem
+  }
+
   buildIFCSpace(row): IFCSpace {
     let iFCItem: IFCSpace = new IFCSpace()
     iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
@@ -199,8 +217,8 @@ export class AppController {
   buildIFCBuilding(row): IFCBuilding {
     let iFCItem: IFCBuilding = new IFCBuilding()
     iFCItem = this.setCommonIFCItemAttributes(row, iFCItem)
-    iFCItem.name = row.Name
     iFCItem.status = row.Status
+    iFCItem.name = row.Name
 
     return iFCItem
   }
