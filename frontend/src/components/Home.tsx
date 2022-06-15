@@ -1,45 +1,51 @@
-import { Button, Modal, Box, Typography, Input } from '@mui/material';
-import React from 'react';
-import Strings from 'utils/Strings';
-import { CloudUpload, CloudCircle } from '@mui/icons-material';
+import { Button, Modal, Box, Typography, Input } from '@mui/material'
+import React from 'react'
+import Strings from 'utils/Strings'
+import { CloudUpload, CloudCircle } from '@mui/icons-material'
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
 
-import 'components/home.css';
+import 'components/home.css'
+import ResultJson from 'utils/result'
 
 export default function Home() {
-  const [open, setOpen] = React.useState(false);
-  const [file, setFile] = React.useState<Partial<File | null>>();
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [open, setOpen] = React.useState(false)
+  const [file, setFile] = React.useState<Partial<File | null>>()
+  const [showTable, setShowTable] = React.useState(Boolean)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const downloadResult = (data: any) => {
-    const blob = new Blob([data], { type: 'text/csv' });
-    const a = document.createElement('a');
+    const blob = new Blob([data], { type: 'text/csv' })
+    const a = document.createElement('a')
 
-    a.href = window.URL.createObjectURL(blob);
-    a.download = 'acoustic-rating-result.csv';
-    a.click();
-    window.URL.revokeObjectURL(a.href);
-  };
+    a.href = window.URL.createObjectURL(blob)
+    a.download = 'acoustic-rating-result.csv'
+    a.click()
+    window.URL.revokeObjectURL(a.href)
+  }
 
   const onChange = (file: File) => {
     if (file) {
-      setFile(file);
+      setFile(file)
     }
-  };
+  }
 
   const readFileAsBinary = () => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (reader.result) {
-        calculateAcousticRating(reader.result);
-      }
-    };
-    reader.readAsBinaryString(file as Blob);
-  };
+    setShowTable(true)
+    setOpen(false)
+    // const reader = new FileReader()
+    // reader.onload = () => {
+    //   if (reader.result) {
+
+    //     calculateAcousticRating(reader.result)
+    //   }
+    // }
+    // reader.readAsBinaryString(file as Blob)
+  }
 
   const calculateAcousticRating = (fileResult: string | ArrayBuffer) => {
-    const formData = new FormData();
-    formData.append('file', new Blob([fileResult], { type: 'text/csv' }));
+    const formData = new FormData()
+    formData.append('file', new Blob([fileResult], { type: 'text/csv' }))
 
     fetch('/api/calculate', {
       method: 'POST',
@@ -48,15 +54,15 @@ export default function Home() {
     })
       .then((response) => response.text())
       .then((readableText) => {
-        downloadResult(readableText);
-      });
-  };
+        downloadResult(readableText)
+      })
+  }
 
   const removeFile = () => {
-    setFile(null);
-  };
+    setFile(null)
+  }
 
-  const boxStyle = { p: 3, bgcolor: 'background.paper', boxShadow: 24 };
+  const boxStyle = { p: 3, bgcolor: 'background.paper', boxShadow: 24 }
 
   const noFileTemplate = () => {
     return (
@@ -76,8 +82,8 @@ export default function Home() {
           </Button>
         </label>
       </div>
-    );
-  };
+    )
+  }
 
   const fileTemplate = () => {
     return (
@@ -90,8 +96,63 @@ export default function Home() {
           </Button>
         </div>
       </div>
-    );
-  };
+    )
+  }
+
+  const getDataGridTemplate = () => {
+    return (
+      <div style={{ height: 600, width: '100%', marginTop: '2rem' }}>
+        <DataGrid
+          rows={ResultJson}
+          columns={columns}
+          pageSize={50}
+          getRowId={(a) => a.GUID}
+          rowsPerPageOptions={[50]}
+          checkboxSelection
+          disableSelectionOnClick
+        />
+      </div>
+    )
+  }
+
+  const columns: GridColDef[] = [
+    { field: 'GUID', headerName: 'GUID', width: 150 },
+    {
+      field: 'AirborneAcousticRatingCReq',
+      headerName: 'AirborneAcousticRatingCReq',
+      width: 250,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+    },
+    {
+      field: 'AirborneAcousticRatingCtrReq',
+      headerName: 'AirborneAcousticRatingCtrReq',
+      width: 250,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+    },
+    {
+      field: 'FootstepAcousticRatingCReq',
+      headerName: 'FootstepAcousticRatingCReq',
+      width: 250,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+    },
+    {
+      field: 'FootstepAcousticRatingCtrReq',
+      headerName: 'FootstepAcousticRatingCtrReq',
+      width: 250,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+    },
+    {
+      field: 'Warning',
+      headerName: 'Warning',
+      width: 150,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+    },
+  ]
 
   return (
     <React.Fragment>
@@ -116,7 +177,13 @@ export default function Home() {
             <Button variant="outlined" component="span" onClick={handleClose}>
               {Strings.ACOUSTIC_RATING_DIALOG_ABORT_BUTTON_LABEL}
             </Button>
-            <Button variant="contained" component="span" sx={{ ml: 1 }} onClick={readFileAsBinary}>
+            <Button
+              variant="contained"
+              component="span"
+              sx={{ ml: 1 }}
+              disabled={!file}
+              onClick={readFileAsBinary}
+            >
               {Strings.ACOUSTIC_RATING_DIALOG_CONFIRMATION_BUTTON_LABEL}
             </Button>
           </div>
@@ -124,11 +191,15 @@ export default function Home() {
       </Modal>
 
       <div className="acoustic-rating-content">
-        <span>{Strings.ACOUSTIC_RATING_TITLE}</span>
-        <Button variant="contained" size="small" onClick={handleOpen}>
-          {Strings.ACOUSTIC_RATING_BUTTON_LABEL}
-        </Button>
+        <div className="acoustic-rating-header">
+          <span>{Strings.ACOUSTIC_RATING_TITLE}</span>
+          <Button variant="contained" size="small" onClick={handleOpen}>
+            {Strings.ACOUSTIC_RATING_BUTTON_LABEL}
+          </Button>
+        </div>
+
+        {showTable && getDataGridTemplate()}
       </div>
     </React.Fragment>
-  );
+  )
 }
