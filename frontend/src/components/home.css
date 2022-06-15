@@ -1,7 +1,10 @@
 .acoustic-rating-content {
+    padding: 2rem;
+}
+
+.acoustic-rating-header {
     display: flex;
     justify-content: space-between;
-    padding: 2rem;
 }
 
 #contained-button-file {
