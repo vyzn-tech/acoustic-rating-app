@@ -31,6 +31,7 @@ import {
   ExternalAcousticRating,
   PREDEFINED_TYPE_ROOF,
   FlatRoof,
+  NeighbourBuilding,
 } from '../libs/acoustic-rating-calculator/src/calculator'
 import { isString } from 'lodash'
 import { createReadStream } from 'fs'
@@ -110,9 +111,6 @@ export class AppController {
     const items: Item[] = []
     for (const row of rows) {
       switch (row.Entity.toLowerCase()) {
-        case 'ifcbuilding':
-          items.push(this.buildBuilding(row))
-          continue
         case 'ifcdoor':
           items.push(this.buildDoor(row))
           continue
@@ -128,6 +126,14 @@ export class AppController {
         case 'ifczone':
           items.push(this.buildZone(row))
           continue
+      }
+
+      if (row.Entity.toLowerCase() === 'ifcbuilding') {
+        if (row.OccupancyType) {
+          items.push(this.buildNeighbourBuilding(row))
+          continue
+        }
+        items.push(this.buildBuilding(row))
       }
 
       if (row.Entity.toLowerCase() === 'ifcslab') {
@@ -217,8 +223,16 @@ export class AppController {
   buildBuilding(row): Building {
     let item: Building = new Building()
     item = this.setCommonItemAttributes(row, item)
-    item.status = row.Status
     item.name = row.Name
+    item.status = row.Status
+
+    return item
+  }
+
+  buildNeighbourBuilding(row): NeighbourBuilding {
+    let item: NeighbourBuilding = new NeighbourBuilding()
+    item = this.setCommonItemAttributes(row, item)
+    item.occupancyType = row.OccupancyType
 
     return item
   }
@@ -228,7 +242,7 @@ export class AppController {
     item = this.setCommonItemAttributes(row, item)
     item.name = row.Name
     item.status = row.Status
-    item.acousticRatingLevelReq = row.AcousticRatingLevelReq
+    item.acousticRatingLevel = row.AcousticRatingLevelReq
 
     return item
   }
