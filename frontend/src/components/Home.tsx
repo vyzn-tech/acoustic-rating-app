@@ -71,12 +71,7 @@ export default function Home() {
         <Typography sx={{ mb: 1 }}>{Strings.ACOUSTIC_RATING_UPLOAD_LABEL}</Typography>
 
         <label htmlFor="contained-button-file">
-          <Input
-            accept=".csv"
-            id="contained-button-file"
-            type="file"
-            onChange={(e) => onChange(e.target.files[0])}
-          />
+          <Input accept=".csv" id="contained-button-file" type="file" onChange={(e) => onChange(e.target.files[0])} />
           <Button variant="contained" component="span">
             {Strings.ACOUSTIC_RATING_DIALOG_UPLOAD_BUTTON_LABEL}
           </Button>
@@ -121,36 +116,31 @@ export default function Home() {
       field: 'AirborneAcousticRatingCReq',
       headerName: 'AirborneAcousticRatingCReq',
       width: 250,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+      valueGetter: (params: GridValueGetterParams) => `${params.row.AirborneAcousticRatingCReq || '-'}`,
     },
     {
       field: 'AirborneAcousticRatingCtrReq',
       headerName: 'AirborneAcousticRatingCtrReq',
       width: 250,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+      valueGetter: (params: GridValueGetterParams) => `${params.row.AirborneAcousticRatingCReq || '-'}`,
     },
     {
       field: 'FootstepAcousticRatingCReq',
       headerName: 'FootstepAcousticRatingCReq',
       width: 250,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+      valueGetter: (params: GridValueGetterParams) => `${params.row.AirborneAcousticRatingCReq || '-'}`,
     },
     {
       field: 'FootstepAcousticRatingCtrReq',
       headerName: 'FootstepAcousticRatingCtrReq',
       width: 250,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+      valueGetter: (params: GridValueGetterParams) => `${params.row.AirborneAcousticRatingCReq || '-'}`,
     },
     {
       field: 'Warning',
       headerName: 'Warning',
       width: 150,
-      valueGetter: (params: GridValueGetterParams) =>
-        `${params.row.AirborneAcousticRatingCReq || '-'}`,
+      valueGetter: (params: GridValueGetterParams) => `${params.row.AirborneAcousticRatingCReq || '-'}`,
     },
   ]
 
@@ -177,13 +167,7 @@ export default function Home() {
             <Button variant="outlined" component="span" onClick={handleClose}>
               {Strings.ACOUSTIC_RATING_DIALOG_ABORT_BUTTON_LABEL}
             </Button>
-            <Button
-              variant="contained"
-              component="span"
-              sx={{ ml: 1 }}
-              disabled={!file}
-              onClick={readFileAsBinary}
-            >
+            <Button variant="contained" component="span" sx={{ ml: 1 }} disabled={!file} onClick={readFileAsBinary}>
               {Strings.ACOUSTIC_RATING_DIALOG_CONFIRMATION_BUTTON_LABEL}
             </Button>
           </div>
