@@ -29,6 +29,7 @@ const csvMimeTypes = [
   'text/csv',
   'text/comma-separated-values',
   'text/x-comma-separated-values',
+  'application/vnd.ms-excel',
 ]
 
 const multerOptions = {
