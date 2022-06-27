@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpException,
   HttpStatus,
@@ -11,13 +12,14 @@ import {
 import { AppService } from './app.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiFile } from './api-file.decorator'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger'
 import { stringify } from 'csv-stringify/sync'
 
 import {
   AcousticRatingCalculator,
   ExternalAcousticRatingCollection,
   ExternalAcousticRating,
+  OutputItem,
 } from '../libs/acoustic-rating-calculator/src/calculator'
 import { createReadStream } from 'fs'
 import * as fs from 'fs'
@@ -59,10 +61,11 @@ export class AppController {
   @ApiFile()
   @Post('calculate')
   @UseInterceptors(FileInterceptor('file', multerOptions))
+  @ApiResponseProperty({ type: [OutputItem] })
   calculate(
     @UploadedFile() file: Express.Multer.File,
     @Response({ passthrough: true }) res,
-  ): StreamableFile {
+  ): OutputItem[] {
     const externalAcousticRatings = new ExternalAcousticRatingCollection(
       new ExternalAcousticRating(62, 55),
       new ExternalAcousticRating(0, 0),
@@ -78,18 +81,6 @@ export class AppController {
       items,
       externalAcousticRatings,
     )
-    const output = calculator.calculate()
-
-    const outputCsvAsString = stringify(output, { header: true })
-    const tmpFileName = Date.now() + '.csv'
-    const tmpFilePath = 'tmp/' + tmpFileName
-    fs.writeFileSync(tmpFilePath, outputCsvAsString)
-    const response_file = createReadStream(tmpFilePath)
-
-    res.set({
-      'Content-Type': 'text/csv',
-      'Content-Disposition': 'attachment filename=output.csv',
-    })
-    return new StreamableFile(response_file)
+    return calculator.calculate()
   }
 }
