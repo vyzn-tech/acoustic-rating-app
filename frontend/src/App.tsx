@@ -1,18 +1,10 @@
 import './App.css'
-import Home from 'components/Home'
+import AppHome from 'components/app-home/app-home'
 
 function App() {
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <div>Hallo Welt</div>
-  //     </header>
-  //   </div>
-  // );
-
   return (
     <div id="acoustic-rating-app">
-      <Home></Home>
+      <AppHome></AppHome>
     </div>
   )
 }

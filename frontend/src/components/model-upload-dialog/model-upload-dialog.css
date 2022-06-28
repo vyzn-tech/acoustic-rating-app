@@ -1,0 +1,12 @@
+.model-upload-dialog-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    border-radius: 3px;
+}
+
+.model-upload-dialog-actions {
+    text-align: right;
+}
