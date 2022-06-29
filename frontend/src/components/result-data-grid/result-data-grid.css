@@ -1,5 +1,4 @@
 .result-data-grid {
-    height: 600px;
-    width: 100%;
     margin-top: 2rem;
+    flex: 1 1 auto;
 }
