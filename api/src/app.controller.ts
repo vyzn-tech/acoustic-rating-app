@@ -1,29 +1,28 @@
 import {
-  Body,
   Controller,
   HttpException,
   HttpStatus,
   Post,
+  Req,
   Response,
-  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
 import { AppService } from './app.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiFile } from './api-file.decorator'
-import { ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger'
-import { stringify } from 'csv-stringify/sync'
+import { ApiQuery, ApiResponseProperty, ApiTags } from '@nestjs/swagger'
+import { Request } from 'express'
 
 import {
   AcousticRatingCalculator,
-  ExternalAcousticRatingCollection,
-  ExternalAcousticRating,
   OutputItem,
 } from '../libs/acoustic-rating-calculator/src/calculator'
-import { createReadStream } from 'fs'
-import * as fs from 'fs'
-import CsvConverter from './utils/csv-converter'
+import {
+  ExternalAcousticRating,
+  ExternalAcousticRatingCollection,
+} from '../libs/acoustic-rating-calculator/src/external-acoustic-rating'
+import CsvConverter from '../libs/acoustic-rating-calculator/src/csv-converter'
 
 const csvMimeTypes = [
   'application/csv',
@@ -61,21 +60,44 @@ export class AppController {
   @ApiFile()
   @Post('calculate')
   @UseInterceptors(FileInterceptor('file', multerOptions))
+  @ApiQuery({
+    name: 'params',
+    schema: {
+      type: 'object',
+      example: {
+        'external-acoustic-ratings': {
+          n: { day: 62, night: 55 },
+          ne: { day: 62, night: 55 },
+          e: { day: 0, night: 0 },
+          se: { day: 0, night: 0 },
+          s: { day: 0, night: 0 },
+          sw: { day: 0, night: 0 },
+          w: { day: 0, night: 0 },
+          nw: { day: 0, night: 0 },
+        },
+      },
+    },
+  })
   @ApiResponseProperty({ type: [OutputItem] })
   calculate(
     @UploadedFile() file: Express.Multer.File,
     @Response({ passthrough: true }) res,
+    @Req() request: Request,
   ): OutputItem[] {
-    const externalAcousticRatings = new ExternalAcousticRatingCollection(
-      new ExternalAcousticRating(62, 55),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
-      new ExternalAcousticRating(0, 0),
+    const externalAcousticRatings = Object.assign(
+      new ExternalAcousticRatingCollection(
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0),
+      ),
+      request.query['external-acoustic-ratings'],
     )
+
     const items = new CsvConverter().convertToComponents(file.buffer.toString())
     const calculator = new AcousticRatingCalculator(
       items,
