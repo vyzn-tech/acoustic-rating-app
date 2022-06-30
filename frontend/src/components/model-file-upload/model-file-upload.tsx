@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Typography, Input } from '@mui/material'
-import { CloudUpload, CloudCircle } from '@mui/icons-material'
+import { CloudUpload, CloudDone } from '@mui/icons-material'
 
 import Strings from 'utils/Strings'
 import './model-file-upload.css'
@@ -29,7 +29,7 @@ export default function ModelFileUpload({ onFileUpload }: ModelFileUploadProps) 
   const FileUploadedTemplate = () => {
     return (
       <>
-        <CloudCircle className="icon extra-large" color="success"></CloudCircle>
+        <CloudDone className="icon extra-large" color="success"></CloudDone>
         <div>
           <span>{file?.name}</span>
           <Button variant="text" onClick={removeFile} sx={{ ml: 1 }}>
