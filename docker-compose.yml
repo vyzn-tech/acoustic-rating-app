@@ -14,8 +14,6 @@ services:
     build:
       context: .
       dockerfile: .devops/docker/api/Dockerfile
-    depends_on:
-      - database
     env_file: .env
     networks:
       - default
@@ -23,25 +21,6 @@ services:
       - ./api:/app
       - ./.devops/docker/api/config/entrypoint.sh:/usr/local/bin/entrypoint.sh
     working_dir: /app
-
-  database:
-    build:
-      context: .
-      dockerfile: .devops/docker/database/Dockerfile
-    env_file: .env
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=public
-      - traefik.tcp.routers.db-tcp.rule=HostSNI(`database.dbs-acoustic-rating.docker`)
-      - traefik.tcp.routers.db-tcp.entrypoints=database
-      - traefik.tcp.routers.db-tcp.service=db-proxy
-      - traefik.tcp.services.db-proxy.loadbalancer.server.port=3306
-    networks:
-      default:
-        aliases:
-          - database.dbs-acoustic-rating.docker
-    volumes:
-      - database_volume:/var/lib/mysql
 
   frontend:
     build:
