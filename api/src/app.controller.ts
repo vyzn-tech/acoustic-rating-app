@@ -23,6 +23,10 @@ import {
   ExternalAcousticRatingCollection,
 } from '../libs/acoustic-rating-calculator/src/external-acoustic-rating'
 import CsvConverter from '../libs/acoustic-rating-calculator/src/csv-converter'
+import {
+  SPECTRUM_ADJUSTMENT_TYPE_C,
+  SPECTRUM_ADJUSTMENT_TYPE_CTR,
+} from '../libs/acoustic-rating-calculator/src/noise-exposure'
 
 const csvMimeTypes = [
   'application/csv',
@@ -66,14 +70,46 @@ export class AppController {
       type: 'object',
       example: {
         'external-acoustic-ratings': {
-          n: { day: 62, night: 55 },
-          ne: { day: 62, night: 55 },
-          e: { day: 0, night: 0 },
-          se: { day: 0, night: 0 },
-          s: { day: 0, night: 0 },
-          sw: { day: 0, night: 0 },
-          w: { day: 0, night: 0 },
-          nw: { day: 0, night: 0 },
+          n: {
+            day: 62,
+            night: 55,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_CTR,
+          },
+          ne: {
+            day: 62,
+            night: 55,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_CTR,
+          },
+          e: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
+          se: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
+          s: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
+          sw: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
+          w: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
+          nw: {
+            day: 0,
+            night: 0,
+            spectrumAdjustmentType: SPECTRUM_ADJUSTMENT_TYPE_C,
+          },
         },
       },
     },
@@ -86,14 +122,14 @@ export class AppController {
   ): OutputItem[] {
     const externalAcousticRatings = Object.assign(
       new ExternalAcousticRatingCollection(
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
-        new ExternalAcousticRating(0, 0),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_CTR),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_CTR),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
+        new ExternalAcousticRating(0, 0, SPECTRUM_ADJUSTMENT_TYPE_C),
       ),
       request.query['external-acoustic-ratings'],
     )
