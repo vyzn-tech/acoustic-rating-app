@@ -1,6 +1,3 @@
-[submodule ".devops/devsh"]
-	path = .devops/devsh
-	url = https://github.com/clecherbauer/devsh.git
 [submodule "api/libs/acoustic-rating-calculator"]
 	path = api/libs/acoustic-rating-calculator
 	url = git@github.com:vyzn-tech/acoustic-rating-calculator.git

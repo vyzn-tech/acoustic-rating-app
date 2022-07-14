@@ -19,13 +19,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=3000 WDS_SOCKET_PORT=80 react-scripts start",
+    "start": "PORT=8110 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint \"**/{src,apps,libs,test}/**/*.{js,jsx,ts,tsx}\" --fix",
     "lint-no-fix": "eslint \"**/{src,apps,libs,test}/**/*.{js,jsx,ts,tsx}\""
   },
+  "proxy": "http://api:8111",
   "eslintConfig": {
     "extends": [
       "react-app",

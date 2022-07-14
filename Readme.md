@@ -1,11 +1,5 @@
 # dbs-acoustic-rating
 
-
-## Installation of Docker Dependencies
-Execute this after cloning the Project
-
-    ./dev.sh setup
-
 ## First Startup
     ./dev.sh init
     docker-compose build
