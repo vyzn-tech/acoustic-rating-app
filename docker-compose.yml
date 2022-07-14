@@ -14,45 +14,29 @@ services:
     build:
       context: .
       dockerfile: .devops/docker/api/Dockerfile
-    env_file: .env
+    environment:
+      - MAX_FILE_SIZE=20000000
     networks:
       - default
     volumes:
       - ./api:/app
-      - ./.devops/docker/api/config/entrypoint.sh:/usr/local/bin/entrypoint.sh
+    ports:
+      - "8111:8111"
     working_dir: /app
 
   frontend:
     build:
       context: .
       dockerfile: .devops/docker/frontend/Dockerfile
-    env_file: .env
-    networks:
-      - default
-    volumes:
-      - ./frontend:/app
-    working_dir: /app
-
-  proxy:
-    build:
-      context: .
-      dockerfile: .devops/docker/proxy/Dockerfile
-    depends_on:
-      - api
-      - frontend
-    env_file: .env
-    labels:
-      - traefik.backend=dbs-acoustic-rating
-      - traefik.frontend.rule=Host:dev.dbs-acoustic-rating.docker
-      - traefik.docker.network=public
-      - traefik.port=80
     networks:
       default:
         aliases:
           - dev.dbs-acoustic-rating.docker
-      public: {}
       dbs_network:
         aliases:
           - dbs-acoustic-rating
     volumes:
-      - ./api/static:/app/api/v1/static
+      - ./frontend:/app
+    ports:
+      - "8110:8110"
+    working_dir: /app
