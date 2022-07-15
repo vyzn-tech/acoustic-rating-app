@@ -6,6 +6,8 @@ const { ModuleFederationPlugin } = require('webpack').container;
 //In order to override the webpack configuration without ejecting the create-react-app
 defaults.__set__('configFactory', (webpackEnv) => {
   let config = webpackConfig(webpackEnv);
+  config.optimization.splitChunks = false;
+
 
   //Customize the webpack configuration here.
 
@@ -18,10 +20,12 @@ defaults.__set__('configFactory', (webpackEnv) => {
     new ModuleFederationPlugin({
       name: 'app1',
       filename: 'remoteEntry.js',
+      // library: {type: 'module', name: 'app1'},
       exposes: {
         './App': './src/App',
       },
-      shared: {},
+      // shared: {},
+      shared: {react: {singleton: true, eager: true}, 'react-dom': {singleton: true, eager: true}},
     }),
   ];
 
