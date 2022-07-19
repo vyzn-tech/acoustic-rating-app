@@ -1,5 +1,5 @@
 export default {
-  ACOUSTIC_RATING_TITLE: 'Schallschutz',
+  ACOUSTIC_RATING_TITLE: 'Schallschutz remote',
   ACOUSTIC_RATING_DIALOG_TITLE: 'Schallschutzanforderungen ermitteln',
   ACOUSTIC_RATING_DIALOG_DESCRIPTION:
     'Laden Sie das Modell hoch, für welches Sie die Schallschutzanforderungen ermitteln wollen.',
