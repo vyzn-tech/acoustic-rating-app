@@ -8,6 +8,9 @@ defaults.__set__('configFactory', (webpackEnv) => {
   let config = webpackConfig(webpackEnv);
   config.devServer.port = 8110;
 
+  config.optimization.splitChunks = false;
+  config.output.publicPath = 'auto';
+
   //Customize the webpack configuration here.
 
   // config.resolve.fallback = {
@@ -19,8 +22,10 @@ defaults.__set__('configFactory', (webpackEnv) => {
     new ModuleFederationPlugin({
       name: 'app1',
       filename: 'remoteEntry.js',
+      library: {type: 'var', name: 'app1'},
       exposes: {
-        './App': './src/App',
+        './web-components': './src/app.js',
+        './remoteApp': './src/remoteApp',
       },
       shared: {},
     }),
