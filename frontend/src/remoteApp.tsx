@@ -12,5 +12,4 @@ export default (el: HTMLElement) => {
       <App />
     </React.StrictMode>,
   )
-  // ReactDOM.render(<App></App>, el as HTMLElement)
 }

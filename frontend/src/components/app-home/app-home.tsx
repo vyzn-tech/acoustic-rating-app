@@ -34,9 +34,8 @@ export default function AppHome() {
     const externalAcousticRatingPartial =
       '?external-acoustic-ratings[n][day]=62&external-acoustic-ratings[n][night]=55&external-acoustic-ratings[ne][day]=62&external-acoustic-ratings[ne][night]=55&external-acoustic-ratings[e][day]=0&external-acoustic-ratings[e][night]=0&external-acoustic-ratings[se][day]=0&external-acoustic-ratings[se][night]=0&external-acoustic-ratings[s][day]=0&external-acoustic-ratings[s][night]=0&external-acoustic-ratings[sw][day]=0&external-acoustic-ratings[sw][night]=0&external-acoustic-ratings[w][day]=0&external-acoustic-ratings[w][night]=0&external-acoustic-ratings[nw][day]=0&external-acoustic-ratings[nw][night]=0'
 
-    fetch(`/api/calculate${externalAcousticRatingPartial}`, {
+    fetch(`http://dev.dbs-acoustic-rating.docker/api/calculate${externalAcousticRatingPartial}`, {
       method: 'POST',
-      mode: 'no-cors',
       body: formData,
     })
       .then((response) => response.json())
