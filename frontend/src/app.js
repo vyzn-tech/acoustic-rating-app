@@ -15,11 +15,6 @@ class RApp extends React.Component {
 
 class AppWebComponent extends HTMLElement {
   connectedCallback() {
-    // const mountPoint = document.createElement('span')
-    // this.attachShadow({ mode: 'open' }).appendChild(mountPoint)
-    // const root = ReactDOM.createRoot(mountPoint)
-    // root.render(<RApp></RApp>)
-
     ReactDOM.render(<RApp />, this)
   }
 }
