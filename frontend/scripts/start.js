@@ -6,7 +6,6 @@ const { ModuleFederationPlugin } = require('webpack').container;
 //In order to override the webpack configuration without ejecting the create-react-app
 defaults.__set__('configFactory', (webpackEnv) => {
   let config = webpackConfig(webpackEnv);
-  config.devServer.port = 8110;
 
   config.optimization.splitChunks = false;
   config.output.publicPath = 'auto';

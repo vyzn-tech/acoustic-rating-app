@@ -162,9 +162,7 @@ export default function ResultDataGrid({ tableData }: ResultDataGridProps) {
             ColumnMenu: CustomColumnMenu,
           }}
           componentsProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
+            toolbar: {},
           }}
           rows={tableData}
           columns={columns}
