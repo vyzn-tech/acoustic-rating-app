@@ -2,4 +2,6 @@
 .gitlab-ci.yml
 docker-alias.yml
 docker-compose.yml
+**/.git
+**/node_modules
 README.md
