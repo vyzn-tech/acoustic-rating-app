@@ -7,10 +7,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
 
   const config = new DocumentBuilder()
-    .setTitle('dbs-acoustic-rating')
-    .setDescription('The dbs-acoustic-rating API description')
+    .setTitle('acoustic-rating-app')
+    .setDescription('The acoustic-rating-app API description')
     .setVersion('1.0')
-    .addTag('dbs-acoustic-rating')
+    .addTag('acoustic-rating-app')
     .build()
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api/schema', app, document)

@@ -1,3 +1,3 @@
-[submodule "api/libs/acoustic-rating-calculator"]
-	path = api/libs/acoustic-rating-calculator
-	url = git@github.com:vyzn-tech/acoustic-rating-calculator.git
+[submodule "api/libs/lib-acoustic-rating"]
+	path = api/libs/lib-acoustic-rating
+	url = https://github.com/vyzn-tech/lib-acoustic-rating.git

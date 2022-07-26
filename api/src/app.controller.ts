@@ -57,7 +57,7 @@ const multerOptions = {
 }
 
 @Controller()
-@ApiTags('dbs-acoustic-rating')
+@ApiTags('acoustic-rating-app')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
