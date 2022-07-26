@@ -1,6 +1,4 @@
 version: '3.3'
-volumes:
-  database_volume: {}
 
 networks:
   default: {}
@@ -31,10 +29,10 @@ services:
     networks:
       default:
         aliases:
-          - dev.dbs-acoustic-rating.docker
+          - dev.acoustic-rating-app.docker
       dbs_network:
         aliases:
-          - dbs-acoustic-rating
+          - acoustic-rating-app
     volumes:
       - ./frontend:/app
     ports:

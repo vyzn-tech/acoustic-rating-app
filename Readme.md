@@ -1,4 +1,4 @@
-# dbs-acoustic-rating
+# acoustic-rating-app
 
 ## First Startup
     ./dev.sh init

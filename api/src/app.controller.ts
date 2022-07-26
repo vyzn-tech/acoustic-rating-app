@@ -17,16 +17,16 @@ import { Request } from 'express'
 import {
   AcousticRatingCalculator,
   OutputItem,
-} from '../libs/acoustic-rating-calculator/src/calculator'
+} from '../libs/lib-acoustic-rating/src/calculator'
 import {
   ExternalAcousticRating,
   ExternalAcousticRatingCollection,
-} from '../libs/acoustic-rating-calculator/src/external-acoustic-rating'
-import CsvConverter from '../libs/acoustic-rating-calculator/src/csv-converter'
+} from '../libs/lib-acoustic-rating/src/external-acoustic-rating'
+import CsvConverter from '../libs/lib-acoustic-rating/src/csv-converter'
 import {
   SPECTRUM_ADJUSTMENT_TYPE_C,
   SPECTRUM_ADJUSTMENT_TYPE_CTR,
-} from '../libs/acoustic-rating-calculator/src/noise-exposure'
+} from '../libs/lib-acoustic-rating/src/noise-exposure'
 
 const csvMimeTypes = [
   'application/csv',
@@ -57,7 +57,7 @@ const multerOptions = {
 }
 
 @Controller()
-@ApiTags('dbs-acoustic-rating')
+@ApiTags('acoustic-rating-app')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
