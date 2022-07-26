@@ -6,13 +6,12 @@ import {
   GridToolbarFilterButton,
   GridColumnMenuContainer,
   SortGridMenuItems,
-  GridCsvExportOptions,
   useGridApiContext,
   GridValueFormatterParams,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid'
 
-import { Button, ButtonProps, Stack, IconButton } from '@mui/material'
+import { Stack, IconButton } from '@mui/material'
 
 import { FileDownload, FilterList } from '@mui/icons-material'
 
@@ -86,20 +85,6 @@ export default function ResultDataGrid({ tableData }: ResultDataGridProps) {
     const handleExport = () => gridApiRef.current.exportDataAsCsv()
     const handleFilter = () => gridApiRef.current.showFilterPanel()
 
-    // const buttonBaseProps: ButtonProps = {
-    //   color: 'primary',
-    //   size: 'small',
-    //   startIcon: <FileDownloadIcon />,
-    // }
-
-    const FilterButton = () => {
-      return (
-        <IconButton title="Filter results" onClick={handleFilter}>
-          <FilterList />
-        </IconButton>
-      )
-    }
-
     return (
       <GridToolbarContainer {...props} sx={{ py: 2, px: 2 }}>
         <Stack direction="row" alignItems="center" spacing={1} justifyContent="space-between" flex={1}>
@@ -124,13 +109,6 @@ export default function ResultDataGrid({ tableData }: ResultDataGridProps) {
               },
             }}
           ></GridToolbarFilterButton>
-
-          {/* <Button {...buttonBaseProps} onClick={() => handleFilter()} sx={{ px: 1 }}>
-            Filter
-          </Button>
-          <Button {...buttonBaseProps} onClick={() => handleExport({})} sx={{ px: 1 }}>
-            <FileDownloadIcon></FileDownloadIcon>
-          </Button> */}
         </div>
       </GridToolbarContainer>
     )
