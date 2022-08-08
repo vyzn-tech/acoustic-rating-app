@@ -10,6 +10,8 @@ services:
     build:
       context: .
       dockerfile: .devops/docker/api/Dockerfile
+      args:
+        PRODUCTION_BUILD: true
     environment:
       - MAX_FILE_SIZE=20000000
     networks:
@@ -19,12 +21,13 @@ services:
       - ./api:/app
     ports:
       - "8111:8111"
-    working_dir: /app
 
   frontend:
     build:
       context: .
       dockerfile: .devops/docker/frontend/Dockerfile
+      args:
+        PRODUCTION_BUILD: true
     networks:
       default:
         aliases:
@@ -36,4 +39,11 @@ services:
       - ./frontend:/app
     ports:
       - "8110:8110"
-    working_dir: /app
+    command:
+      - "runuser"
+      - "-u"
+      - "node"
+      - "--"
+      - "npm"
+      - "run"
+      - "start"
