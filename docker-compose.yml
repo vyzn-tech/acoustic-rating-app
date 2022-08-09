@@ -10,8 +10,6 @@ services:
     build:
       context: .
       dockerfile: .devops/docker/service/Dockerfile
-      args:
-        PRODUCTION_BUILD: true
     environment:
       - MAX_FILE_SIZE=20000000
     networks:
@@ -26,8 +24,6 @@ services:
     build:
       context: .
       dockerfile: .devops/docker/gui/Dockerfile
-      args:
-        PRODUCTION_BUILD: true
     networks:
       default:
         aliases:
