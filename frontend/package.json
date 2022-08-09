@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "acoustic-rating-app-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

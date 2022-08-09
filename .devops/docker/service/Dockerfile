@@ -4,7 +4,7 @@ USER root
 ARG PRODUCTION_BUILD
 WORKDIR /var/source
 COPY . /var/source
-RUN /var/source/.devops/docker/api/build.sh
+RUN /var/source/.devops/docker/service/build.sh
 
 WORKDIR /app
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

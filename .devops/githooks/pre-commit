@@ -5,12 +5,12 @@ echo "Checking Code Style"
 
 sleep 2
 
-echo "frontend"
-(cd frontend || exit;  npm run lint-no-fix)
+echo "api"
+(cd api || exit;  npm run lint-no-fix)
 
 sleep 1
 
-echo "api"
-(cd api || exit; npm run lint-no-fix)
+echo "frontend"
+(cd frontend || exit; npm run lint-no-fix)
 
 echo "no errors found."

@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        service: [ frontend, api ]
+        service: [ gui, service ]
     runs-on: ubuntu-latest
     environment:
       name: dbs.dev
@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: dbsdockerregistry.azurecr.io/acoustic-rating-frontend:${{ env.DEPLOY_VERSION }}
+          tags: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{ env.DEPLOY_VERSION }}
           file: ./.devops/docker/${{ matrix.service }}/Dockerfile
           build-args: PRODUCTION_BUILD=true
 
@@ -56,7 +56,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        service: [ frontend, api ]
+        service: [ gui, service ]
     runs-on: ubuntu-latest
     needs: build_upload_images_non_prod
     environment:
@@ -100,13 +100,13 @@ jobs:
         with:
           app-name: acoustic-rating-${{ matrix.service }}-dev
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: dbsdockerregistry.azurecr.io/${{ matrix.service }}:${{needs.build_upload_images_non_prod.outputs.deploy_version}}
+          images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_upload_images_non_prod.outputs.deploy_version}}
 
   test_deploy:
     strategy:
       max-parallel: 1
       matrix:
-        service: [ frontend, api ]
+        service: [ gui, service ]
     runs-on: ubuntu-latest
     needs: [ build_upload_images_non_prod, dev_deploy ]
     environment:

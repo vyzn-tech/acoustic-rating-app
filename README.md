@@ -40,10 +40,10 @@
 2. Init Git-Submodules: `git submodule update --init`
 3. Configure Git-Hooks
    1. `git config core.hooksPath .devops/githooks`
-   2.  cd into `api/libs/acoustic-rating-calculator` and execute `git config core.hooksPath .devops/githooks`
+   2.  cd into `service/libs/acoustic-rating-calculator` and execute `git config core.hooksPath .devops/githooks`
 4. Install node_modules
-   1. cd into api and execute `npm install`
-   2. cd into frontend and execute `npm install`
+   1. cd into directory `api` and execute `npm install`
+   2. cd into directory `frontend` and execute `npm install`
 
 
     docker-compose build
@@ -51,10 +51,10 @@
 
 #### Update Dependencies after Branch-switching
 1. Update Git-Submodules `git submodule update --init`
-2. Remove node_modules from api and frontend
+2. Remove node_modules from directories `api` and `frontend`
 4. Reinstall node_modules
-   1. cd into api and execute `npm install`
-   2. cd into frontend and execute `npm install`
+   1. cd into `api` and execute `npm install`
+   2. cd into `frontend` and execute `npm install`
 
 
     docker-compose down
@@ -65,10 +65,10 @@
 #### First Initialization
 1. Init Git-Submodules `git submodule update --init`
 4. Install node_modules
-   1. cd into api and execute `npm install`
-   2. cd into frontend and execute `npm install`
-3. Start Frontend service `npm run start`
-4. Start API service `npm run start:dev`
+   1. cd into `api` and execute `npm install`
+   2. cd into `frontend` and execute `npm install`
+3. Start GUI service `npm run start`
+4. Start Backend service `npm run start:dev`
 
 ## Ports
 The app is reachable at `http://localhost:8110`

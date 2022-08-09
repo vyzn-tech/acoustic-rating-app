@@ -4,7 +4,7 @@ set -e
 SOURCE_ROOT="/var/source"
 WEB_ROOT="/app"
 
-cp "$SOURCE_ROOT/.devops/docker/api/config/entrypoint.sh" /usr/local/bin
+cp "$SOURCE_ROOT/.devops/docker/service/config/entrypoint.sh" /usr/local/bin
 
 if [ "$PRODUCTION_BUILD" == "true" ]; then
     (
