@@ -7,7 +7,6 @@ WEB_ROOT="/app"
 if [ "$PRODUCTION_BUILD" == "true" ]; then
     (
         cd "$SOURCE_ROOT/frontend" || exit
-        npm install --global http-server
         npm install --unsafe-perm
         npm run build
         cp -r "build" "$WEB_ROOT"

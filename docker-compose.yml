@@ -23,7 +23,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: .devops/docker/gui/Dockerfile
+      dockerfile: .devops/docker/gui/Dockerfile.local
     networks:
       default:
         aliases:
@@ -35,11 +35,3 @@ services:
       - ./frontend:/app
     ports:
       - "8110:8110"
-    command:
-      - "runuser"
-      - "-u"
-      - "node"
-      - "--"
-      - "npm"
-      - "run"
-      - "start"
