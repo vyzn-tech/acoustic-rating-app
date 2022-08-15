@@ -99,7 +99,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: acoustic-rating-${{ matrix.service }}-dev
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_DEV_{0}', matrix.index.uppercase)] }}
           images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_upload_images_non_prod.outputs.deploy_version}}
 
   test_deploy:
@@ -149,5 +149,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: acoustic-rating-${{ matrix.service }}-test
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_TEST_{0}', matrix.index.uppercase)] }}
           images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_upload_images_non_prod.outputs.deploy_version}}
