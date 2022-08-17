@@ -84,7 +84,7 @@ jobs:
       - name: Deploy common AppSettings
         uses: azure/appservice-settings@v1
         with:
-          app-name: acoustic-rating-${{ matrix.service }}
+          app-name: acoustic-rating-${{ matrix.service }}-dev
           mask-inputs: false
           app-settings-json: ${{ env.COMMON_APP_SETTINGS }}
 
