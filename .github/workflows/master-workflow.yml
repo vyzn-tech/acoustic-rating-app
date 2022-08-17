@@ -67,7 +67,7 @@ jobs:
       - name: Login to Azure CLI
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
       - name: Load common AppSettings
         run: |
@@ -117,7 +117,7 @@ jobs:
       - name: Login to Azure CLI
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_TEST }}
 
       - name: Load common AppSettings
         run: |
