@@ -6,7 +6,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const config = defaults.__get__('config');
 
 config.optimization.splitChunks = false;
-config.output.path = 'auto'
+config.output.publicPath = 'auto';
 
 //Customize the webpack configuration here.
 // config.resolve.fallback = {
