@@ -13,8 +13,10 @@ services:
     environment:
       - MAX_FILE_SIZE=20000000
     networks:
-      - default
-      - dbs_network
+      default: {}
+      dbs_network:
+        aliases:
+          - acoustic-rating-service
     volumes:
       - ./api:/app
     ports:
@@ -28,9 +30,6 @@ services:
       default:
         aliases:
           - dev.acoustic-rating-app.docker
-      dbs_network:
-        aliases:
-          - acoustic-rating-app
     volumes:
       - ./frontend:/app
     ports:
