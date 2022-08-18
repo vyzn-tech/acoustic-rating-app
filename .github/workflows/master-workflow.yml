@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - "*"
   # Allow manually trigger
   workflow_dispatch:
 
