@@ -103,52 +103,52 @@ jobs:
           publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_DEV_{0}', matrix.index.uppercase)] }}
           images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_deploy_version.outputs.deploy_version}}
 
-  test_deploy:
-    strategy:
-      max-parallel: 1
-      matrix:
-        service: [ gui, service ]
-    runs-on: ubuntu-latest
-    needs: [ build_deploy_version, build_upload_images_non_prod, dev_deploy ]
-    environment:
-      name: dbs.test
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Login to Azure CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_TEST }}
-
-      - name: Load common AppSettings
-        run: |
-          echo 'COMMON_APP_SETTINGS<<EOF' >> $GITHUB_ENV
-          cat ./.devops/azure/config/azureContainerProperties-common.json >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-
-      - name: Load TEST AppSettings
-        run: |
-          echo 'TEST_APP_SETTINGS<<EOF' >> $GITHUB_ENV
-          cat ./.devops/azure/config/azureContainerProperties-test.json >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-
-      - name: Deploy common AppSettings
-        uses: azure/appservice-settings@v1
-        with:
-          app-name: acoustic-rating-${{ matrix.service }}-test
-          mask-inputs: false
-          app-settings-json: ${{ env.COMMON_APP_SETTINGS }}
-
-      - name: Deploy TEST AppSettings
-        uses: azure/appservice-settings@v1
-        with:
-          app-name: acoustic-rating-${{ matrix.service }}-test
-          mask-inputs: false
-          app-settings-json: ${{ env.TEST_APP_SETTINGS }}
-
-      - name: Deploy acoustic-rating-${{ matrix.service }}-test
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: acoustic-rating-${{ matrix.service }}-test
-          publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_TEST_{0}', matrix.index.uppercase)] }}
-          images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_deploy_version.outputs.deploy_version}}
+#  test_deploy:
+#    strategy:
+#      max-parallel: 1
+#      matrix:
+#        service: [ gui, service ]
+#    runs-on: ubuntu-latest
+#    needs: [ build_deploy_version, build_upload_images_non_prod, dev_deploy ]
+#    environment:
+#      name: dbs.test
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Login to Azure CLI
+#        uses: azure/login@v1
+#        with:
+#          creds: ${{ secrets.AZURE_CREDENTIALS_TEST }}
+#
+#      - name: Load common AppSettings
+#        run: |
+#          echo 'COMMON_APP_SETTINGS<<EOF' >> $GITHUB_ENV
+#          cat ./.devops/azure/config/azureContainerProperties-common.json >> $GITHUB_ENV
+#          echo 'EOF' >> $GITHUB_ENV
+#
+#      - name: Load TEST AppSettings
+#        run: |
+#          echo 'TEST_APP_SETTINGS<<EOF' >> $GITHUB_ENV
+#          cat ./.devops/azure/config/azureContainerProperties-test.json >> $GITHUB_ENV
+#          echo 'EOF' >> $GITHUB_ENV
+#
+#      - name: Deploy common AppSettings
+#        uses: azure/appservice-settings@v1
+#        with:
+#          app-name: acoustic-rating-${{ matrix.service }}-test
+#          mask-inputs: false
+#          app-settings-json: ${{ env.COMMON_APP_SETTINGS }}
+#
+#      - name: Deploy TEST AppSettings
+#        uses: azure/appservice-settings@v1
+#        with:
+#          app-name: acoustic-rating-${{ matrix.service }}-test
+#          mask-inputs: false
+#          app-settings-json: ${{ env.TEST_APP_SETTINGS }}
+#
+#      - name: Deploy acoustic-rating-${{ matrix.service }}-test
+#        uses: azure/webapps-deploy@v2
+#        with:
+#          app-name: acoustic-rating-${{ matrix.service }}-test
+#          publish-profile: ${{ secrets[format('AZURE_WEBAPP_PUBLISH_PROFILE_TEST_{0}', matrix.index.uppercase)] }}
+#          images: dbsdockerregistry.azurecr.io/acoustic-rating-${{ matrix.service }}:${{needs.build_deploy_version.outputs.deploy_version}}
