@@ -19,4 +19,4 @@ class AppWebComponent extends HTMLElement {
   }
 }
 
-customElements.define('react-element', AppWebComponent)
+customElements.define('acoustic-rating-app', AppWebComponent)
