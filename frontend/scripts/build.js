@@ -16,12 +16,12 @@ config.output.publicPath = 'auto';
 config.plugins = [
   ...config.plugins,
   new ModuleFederationPlugin({
-    name: 'app1',
+    name: 'acousticRating',
     filename: 'remoteEntry.js',
-    library: {type: 'var', name: 'app1'},
     exposes: {
-      './web-components': './src/app.js',
-      './remoteApp': './src/remoteApp',
+      './web-component': './src/app.js',
+      './remote-app': './src/remote-app',
+      './config': './src/app.config.ts',
     },
     shared: {},
   }),
