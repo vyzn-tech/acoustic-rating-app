@@ -4,9 +4,8 @@ import ResultDataGrid from 'components/result-data-grid/result-data-drid'
 import ModelUploadDialog from 'components/model-upload-dialog/model-upload-dialog'
 
 import Strings from 'utils/Strings'
+import calculateService from 'services/calculate.service'
 import 'components/app-home/app-home.css'
-
-import appConfiguration from 'app.config'
 
 export default function AppHome() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -30,22 +29,7 @@ export default function AppHome() {
   }
 
   const fetchResultsFromApi = (fileResult: string | ArrayBuffer) => {
-    const formData = new FormData()
-    formData.append('file', new Blob([fileResult], { type: 'text/csv' }))
-
-    appConfiguration.getRequestHeaders().then((requestHeaders: any) => {
-      const externalAcousticRatingPartial =
-        '?external-acoustic-ratings[n][day]=62&external-acoustic-ratings[n][night]=55&external-acoustic-ratings[ne][day]=62&external-acoustic-ratings[ne][night]=55&external-acoustic-ratings[e][day]=0&external-acoustic-ratings[e][night]=0&external-acoustic-ratings[se][day]=0&external-acoustic-ratings[se][night]=0&external-acoustic-ratings[s][day]=0&external-acoustic-ratings[s][night]=0&external-acoustic-ratings[sw][day]=0&external-acoustic-ratings[sw][night]=0&external-acoustic-ratings[w][day]=0&external-acoustic-ratings[w][night]=0&external-acoustic-ratings[nw][day]=0&external-acoustic-ratings[nw][night]=0'
-
-      fetch(`${appConfiguration.apiEndpoint}/calculate${externalAcousticRatingPartial}`, {
-        method: 'POST',
-        headers: requestHeaders,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setTableData(data)
-        })
-    })
+    calculateService.appendFile(fileResult).calculate().then(setTableData)
   }
 
   return (
