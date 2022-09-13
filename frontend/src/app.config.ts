@@ -1,18 +1,3 @@
-// type RequestHeaders = {
-//   authorization?: string
-// }
-
-// export default class AppConfiguration {
-//   apiEndpoint?: string
-//   getRequestHeaders?: any
-
-//   constructor(apiEndpoint: string, getRequestHeaders: any) {
-//     this.apiEndpoint = apiEndpoint
-//     this.getRequestHeaders = getRequestHeaders
-//   }
-// }
-
-// TODO: Replace by S
 type Configuration = {
   apiEndpoint?: string
   getRequestHeaders?: any
